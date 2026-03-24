@@ -1,0 +1,44 @@
+from flask import Flask, render_template, request, jsonify
+import csv
+import os
+from datetime import datetime
+
+app = Flask(__name__)
+
+FILE_NAME = "attendance.csv"
+
+# Create CSV file if not exists
+if not os.path.exists(FILE_NAME):
+    with open(FILE_NAME, mode='w', newline='') as file:
+        writer = csv.writer(file)
+        writer.writerow(["Date", "Time", "Name", "Roll", "Subject", "Status"])
+
+@app.route("/")
+def home():
+    return render_template("index.html")
+
+
+@app.route("/submit", methods=["POST"])
+def submit_attendance():
+    
+    name = request.form["name"]
+    roll = request.form["roll"]
+    subject = request.form["subject"]
+    status = request.form["status"]
+
+    now = datetime.now()
+    date = now.strftime("%Y-%m-%d")
+    time = now.strftime("%H:%M:%S")
+
+    # Save data to CSV
+    with open(FILE_NAME, mode='a', newline='') as file:
+        writer = csv.writer(file)
+        writer.writerow([date, time, name, roll, subject, status])
+
+    return jsonify({
+        "message": "Attendance Recorded Successfully"
+    })
+
+
+if __name__ == "__main__":
+    app.run(debug=True)
