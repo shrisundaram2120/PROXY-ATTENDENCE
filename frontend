@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Proxy Attendance System</title>
+
+<style>
+body {
+    font-family: Arial, sans-serif;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    margin: 0;
+    padding: 0;
+}
+
+.container {
+    width: 400px;
+    margin: 80px auto;
+    background: white;
+    padding: 25px;
+    border-radius: 12px;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+}
+
+h2 {
+    text-align: center;
+    color: #333;
+}
+
+label {
+    font-weight: bold;
+    margin-top: 12px;
+    display: block;
+}
+
+input, select {
+    width: 100%;
+    padding: 10px;
+    margin-top: 6px;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+}
+
+button {
+    width: 100%;
+    margin-top: 20px;
+    padding: 12px;
+    background: #667eea;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+button:hover {
+    background: #5a67d8;
+}
+
+.message {
+    text-align: center;
+    margin-top: 15px;
+    font-weight: bold;
+    color: green;
+}
+</style>
+
+</head>
+
+<body>
+
+<div class="container">
+
+<h2>Proxy Attendance System</h2>
+
+<form id="attendanceForm">
+
+<label>Student Name</label>
+<input type="text" id="name" required>
+
+<label>Roll Number</label>
+<input type="text" id="roll" required>
+
+<label>Subject</label>
+<input type="text" id="subject" required>
+
+<label>Status</label>
+<select id="status">
+    <option value="Present">Present</option>
+    <option value="Proxy">Proxy</option>
+    <option value="Absent">Absent</option>
+</select>
+
+<button type="submit">Submit Attendance</button>
+
+</form>
+
+<div class="message" id="message"></div>
+
+</div>
+
+<script>
+
+document.getElementById("attendanceForm")
+.addEventListener("submit", function(e) {
+
+    e.preventDefault();
+
+    let name = document.getElementById("name").value;
+    let roll = document.getElementById("roll").value;
+    let subject = document.getElementById("subject").value;
+    let status = document.getElementById("status").value;
+
+    fetch("/submit", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+            name: name,
+            roll: roll,
+            subject: subject,
+            status: status
+        })
+    })
+
+    .then(response => response.json())
+    .then(data => {
+
+        document.getElementById("message")
+        .innerText = data.message;
+
+        document.getElementById("attendanceForm")
+        .reset();
+
+    })
+
+    .catch(error => {
+        console.error("Error:", error);
+    });
+
+});
+
+</script>
+
+</body>
+</html>
